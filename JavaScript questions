@@ -1,0 +1,111 @@
+//  let a = 2,
+//  let a = 4;
+// var a = 9;
+// var a = 10;
+// console.log(a);
+// console.log("this is js");
+
+// const arr = [
+//   [1, 2],
+//   [3, 4],
+//   [5, 6],
+// ];
+
+// const res = arr.flat(2);
+// console.log(res);
+
+//without using builtin function
+const arr = [
+  [1, 2],
+  [3, 4],
+  [5, 6],
+];
+function flatArray(arr, n) {
+  if (arr.length < n) return arr;
+  const res = [];
+  for (let i = 0; i < arr.length; i++) {
+    if (typeof arr[i] === "number") {
+      res[i] = arr[i];
+    } else {
+      res.push(...flatArray(arr[i], n - 1));
+    }
+  }
+  return res;
+}
+
+const rees = flatArray(arr, 1);
+console.log(rees);
+
+console.log("2" + 4 * 3);
+
+console.log("3" * 4 + 1);
+
+console.log(typeof NaN);
+
+console.log("3" - "1" + 6);
+
+const arr1 = ["z", "a", "d", "c"];
+
+// const arr1 = ["z", "a", "d", "c"];
+
+function bubbleSort(arr) {
+  let n = arr.length;
+  let swapped;
+
+  do {
+    swapped = false;
+    for (let i = 0; i < n - 1; i++) {
+      if (arr[i] > arr[i + 1]) {
+        // Swap arr[i] and arr[i + 1]
+        let temp = arr[i];
+        arr[i] = arr[i + 1];
+        arr[i + 1] = temp;
+        swapped = true;
+      }
+    }
+    n--; // Reduce the range of the next iteration since the last element is sorted
+  } while (swapped);
+  return arr;
+}
+
+const sortedArr1 = bubbleSort(arr1);
+console.log(sortedArr1);
+
+// console.log(arr1);
+
+// setTimeout(() => {
+//   console.log("This will print after 2 seconds");
+// }, 2000); // 2000 milliseconds = 2 seconds
+
+// setInterval(() => {
+//   console.log("This will print every 1 second");
+// }, 5000); // 1000 milliseconds = 1 second
+
+console.log(NaN == NaN);
+console.log(NaN === NaN); //true not the number
+
+const arr2 = "zwlksfmksl agklgdlkn kdfnjdsabnf vsdo";
+
+function FindLong(arr2) {
+  const res = arr2.split(" ");
+  const ans = [];
+  for (let i = 0; i < res.length; i++) {
+    ans.push(res[i].length);
+  }
+
+  let maxLength = 0;
+  let maxIndex = -1;
+
+  for (let i = 0; i < ans.length; i++) {
+    if (ans[i] > maxLength) {
+      maxLength = ans[i];
+      maxIndex = i;
+    }
+  }
+
+  console.log("Lengths of each word:", ans);
+  console.log("Longest word length:", maxLength);
+  console.log("Index of longest word:", maxIndex);
+}
+
+FindLong(arr2);
