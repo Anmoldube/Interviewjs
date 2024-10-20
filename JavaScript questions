@@ -109,3 +109,16 @@ function FindLong(arr2) {
 }
 
 FindLong(arr2);
+
+
+jobaaj ka question
+// Online Javascript Editor for free
+// Write, Edit and Run your Javascript code using JS Online Compiler
+const str = "a,b,c,d,e,f,g";
+const arr = [];
+for(let i = 0 ;i < str.length;i++){
+    if(str[i] ==  ','){
+        continue;
+    }else arr.push(str[i]);
+}
+console.log(arr);
