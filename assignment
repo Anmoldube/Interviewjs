@@ -1,0 +1,122 @@
+// import React from "react";
+
+// function App() {
+//   return (
+//     <>
+//       <div>
+//         <Card></Card>
+//       </div>
+//       <Text />
+//     </>
+//   );
+// }
+
+// function Card() {
+//   return (
+//     <>
+//       <h1 className="bg-teal-300">React App</h1>
+//     </>
+//   );
+// }
+// function Text() {
+//   return (
+//     <>
+//       <h1 className="bg-slate-900">React App</h1>
+//     </>
+//   );
+// }
+
+// export default App;
+
+// import React from "react";
+// import { useState } from "react";
+
+// function App() {
+//   const [counter, SetCounter] = useState(0);
+
+//   function UpdateCounter() {
+//     SetCounter(counter + 1);
+//   }
+
+//   return (
+//     <div className="bg-zinc-300">
+//       <input className="h-10 w-26 m-2 border-spacing-2"></input>
+//       <p className="m-3">{}</p>
+//       <button className="bg-black m-3  text-yellow-200" onClick={UpdateCounter}>
+//         click me {counter}
+//       </button>
+//     </div>
+//   );
+// }
+
+// export default App;
+
+// import { useState } from "react";
+
+// function App() {
+//   const [counter, setCounter] = useState(0);
+//   const [inputValue, setInputValue] = useState(1);
+
+//   let count = 1; // 1 * 2 * 3 * 4 * 5  = 120;
+//   for (let i = 1; i <= inputValue; i++) {
+//     count = count * i;
+//   }
+
+//   return (
+//     <div>
+//       <input
+//         className="border border-gray-400"
+//         onChange={function (e) {
+//           setInputValue(e.target.value);
+//         }}
+//         placeholder={"Find sum from 1 to n"}
+//       ></input>
+//       <br />
+//       Sum from 1 to {inputValue} is {count}
+//       <br />
+//       <button
+//         className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+//         onClick={() => {
+//           setCounter(counter + 1);
+//         }}
+//       >
+//         Counter ({counter})
+//       </button>
+//     </div>
+//   );
+// }
+
+// export default App;
+
+// import React from "react";
+
+import React, { useMemo, useState } from "react";
+
+function App() {
+  const [input, setInput] = useState(1);
+
+  const expe = useMemo(() => {
+    function fab(n) {
+      if (n <= 1) return 1;
+      return n * fab(n - 1);
+    }
+    return fab(input);
+  }, [input]);
+
+  return (
+    <div>
+      <h1>React App</h1>
+      <input
+        type="number"
+        className="border border-gray-400"
+        placeholder="Enter a number"
+        value={input}
+        onChange={(e) => setInput(Number(e.target.value))}
+      />
+      <br />
+      <h2>ans: {expe}</h2>
+    </div>
+  );
+}
+
+export default App;
