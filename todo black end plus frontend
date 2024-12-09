@@ -1,0 +1,281 @@
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+
+function CreateTodo() {
+  const [todos, setTodos] = useState([]);
+  const [todo, setTodo] = useState("");
+  const [description, setDescription] = useState("");
+  const [isEditing, setIsEditing] = useState(false);
+  const [currentTodo, setCurrentTodo] = useState({});
+
+  useEffect(() => {
+    fetchTodos();
+  }, []);
+
+  const fetchTodos = async () => {
+    try {
+      const response = await axios.get("http://localhost:3000/todos");
+      setTodos(response.data);
+    } catch (err) {
+      console.error("Error fetching todos:", err.message);
+    }
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (todo.trim() && description.trim()) {
+      try {
+        if (isEditing) {
+          await axios.patch(`http://localhost:3000/todo/${currentTodo._id}`, {
+            title: todo,
+            description: description,
+          });
+          setIsEditing(false);
+          setCurrentTodo({});
+        } else {
+          await axios.post("http://localhost:3000/todo", {
+            title: todo,
+            description: description,
+          });
+        }
+        setTodo("");
+        setDescription("");
+        fetchTodos();
+      } catch (err) {
+        console.error("Error saving todo:", err.message);
+      }
+    } else {
+      console.error("Title and description are required");
+    }
+  };
+
+  const handleEdit = (todo) => {
+    setIsEditing(true);
+    setCurrentTodo(todo);
+    setTodo(todo.title);
+    setDescription(todo.description);
+  };
+
+  const handleDelete = async (id) => {
+    try {
+      await axios.delete(`http://localhost:3000/todo/${id}`);
+      fetchTodos();
+    } catch (err) {
+      console.error("Error deleting todo:", err.message);
+    }
+  };
+
+  const handleComplete = async (id) => {
+    try {
+      await axios.put(`http://localhost:3000/completed/${id}`);
+      fetchTodos();
+    } catch (err) {
+      console.error("Error completing todo:", err.message);
+    }
+  };
+
+  return (
+    <div className="flex flex-col items-center h-screen bg-gray-100 p-4">
+      <form
+        onSubmit={handleSubmit}
+        className="flex flex-col gap-4 bg-white p-6 rounded-lg shadow-md w-full max-w-md"
+      >
+        <input
+          type="text"
+          value={todo}
+          onChange={(e) => setTodo(e.target.value)}
+          placeholder="Enter your todo"
+          className="p-2 border border-gray-300 rounded-md"
+        />
+        <textarea
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+          placeholder="Enter description"
+          className="p-2 border border-gray-300 rounded-md"
+        />
+        <button
+          type="submit"
+          className="p-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+        >
+          {isEditing ? "Update Todo" : "Add Todo"}
+        </button>
+      </form>
+      <ul className="mt-6 w-full max-w-md">
+        {todos.map((todo) => (
+          <li
+            key={todo._id}
+            className="flex justify-between items-center bg-white p-4 mb-2 rounded-md shadow-sm border-l-4 border-blue-500"
+          >
+            <div className="flex-1">
+              <h3
+                className={`font-bold ${
+                  todo.completed ? "line-through text-gray-500" : ""
+                }`}
+              >
+                {todo.title}
+              </h3>
+              <p
+                className={`${
+                  todo.completed ? "line-through text-gray-500" : ""
+                }`}
+              >
+                {todo.description}
+              </p>
+            </div>
+            <div className="flex gap-2">
+              <button
+                onClick={() => handleComplete(todo._id)}
+                className="p-2 bg-green-500 text-white rounded-md hover:bg-green-600"
+              >
+                Complete
+              </button>
+              <button
+                onClick={() => handleEdit(todo)}
+                className="p-2 bg-yellow-500 text-white rounded-md hover:bg-yellow-600"
+              >
+                Edit
+              </button>
+              <button
+                onClick={() => handleDelete(todo._id)}
+                className="p-2 bg-red-500 text-white rounded-md hover:bg-red-600"
+              >
+                Delete
+              </button>
+            </div>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+export default CreateTodo;
+
+
+
+
+
+.//./././......e2345678909876543212345678i9o node.js 8900981920345203459304679
+
+
+const express = require("express");
+const cors = require("cors");
+const { Todo } = require("./database"); // Correctly import the Todo model
+const app = express();
+const mongoose = require("mongoose");
+// const dotenv = require("dotenv");
+
+// Middleware to parse JSON
+app.use(express.json());
+
+// Enable CORS for all routes
+app.use(cors());
+
+// Endpoint to create a new todo
+app.post("/todo", async (req, res) => {
+  const createPayload = req.body;
+
+  if (!createPayload.title || !createPayload.description) {
+    return res
+      .status(400)
+      .json({ error: "Title and description are required" });
+  }
+
+  try {
+    await Todo.create({
+      title: createPayload.title,
+      description: createPayload.description,
+      completed: false,
+    });
+
+    res.json({
+      msg: "Todo created successfully",
+    });
+  } catch (err) {
+    console.error("Error creating todo:", err.message);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+// Endpoint to get all todos
+app.get("/todos", async (req, res) => {
+  try {
+    const todos = await Todo.find(); // Use `Todo` model to query the database
+    res.json(todos);
+  } catch (err) {
+    console.error("Error fetching todos:", err.message);
+    res.status(500).json({ error: "Error fetching todos from database" });
+  }
+});
+
+// Endpoint to mark a todo as completed
+app.put("/completed/:id", async (req, res) => {
+  const todoId = req.params.id;
+
+  try {
+    const updatedTodo = await Todo.findByIdAndUpdate(
+      todoId,
+      { completed: true },
+      { new: true } // Return the updated document
+    );
+
+    if (!updatedTodo) {
+      return res.status(404).json({ error: "Todo not found" });
+    }
+
+    res.json({
+      msg: "Todo marked as completed",
+      updatedTodo,
+    });
+  } catch (err) {
+    console.error("Error updating todo:", err.message);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+// Endpoint to delete a todo
+app.delete("/todo/:id", async (req, res) => {
+  const todoId = req.params.id;
+  try {
+    const deletedTodo = await Todo.findByIdAndDelete(todoId);
+    if (!deletedTodo) {
+      return res.status(404).json({ error: "Todo not found" });
+    }
+    res.json({
+      msg: "Todo deleted successfully",
+    });
+  } catch (err) {
+    console.error("Error deleting todo:", err.message);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+// Endpoint to update a todo
+app.patch("/todo/:id", async (req, res) => {
+  const todoId = req.params.id;
+  const updatePayload = req.body;
+  try {
+    const updatedTodo = await Todo.findByIdAndUpdate(todoId, updatePayload, {
+      new: true,
+    });
+    if (!updatedTodo) {
+      return res.status(404).json({ error: "Todo not found" });
+    }
+    res.json({
+      msg: "Todo updated successfully",
+      updatedTodo,
+    });
+  } catch (err) {
+    console.error("Error updating todo:", err.message);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+// Start the server
+const port = 3000;
+app.listen(port, () => {
+  console.log(`Server running on http://localhost:${port}`);
+});
+
+
+
