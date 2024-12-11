@@ -1,0 +1,97 @@
+import React from "react";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import CreateTodo from "../src/assets/Component/CreateTodo";
+import Landing from "./assets/Component/Landing";
+function App() {
+  return (
+    <>
+      <div className=" ">
+        <button
+          onClick={() => {
+            window.location.href = "/";
+          }}
+          className="bg-teal-500 rounded-sm m-2 h-8 w-13"
+          placeholder="button"
+        >
+          This is a button
+        </button>
+        <button
+          onClick={() => {
+            window.location.href = "/landing";
+          }}
+          className="bg-teal-500 rounded-sm m-2 h-8 w-13"
+          placeholder="button"
+        >
+          This is a button2
+        </button>
+      </div>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Landing />} />
+          <Route path="/landing" element={<CreateTodo />} />
+          {/* <Router path="/edit/:id" component={CreateTodo} /> */}
+          {/* </BrowserRouter> */}
+        </Routes>
+      </BrowserRouter>
+    </>
+  );
+}
+export default App;
+
+
+
+
+The right way 
+
+import React from "react";
+import { BrowserRouter, Route, Routes, useNavigate } from "react-router-dom";
+import CreateTodo from "../src/assets/Component/CreateTodo";
+import Landing from "./assets/Component/Landing";
+function App() {
+  // const navigate = useNavigate();
+  return (
+    <>
+      <BrowserRouter>
+        <Appbar />
+        <Routes>
+          <Route path="/" element={<Landing />} />
+          <Route path="/landing" element={<CreateTodo />} />
+          {/* <Router path="/edit/:id" component={CreateTodo} /> */}
+          {/* </BrowserRouter> */}
+        </Routes>
+      </BrowserRouter>
+    </>
+  );
+}
+
+function Appbar() {
+  const navigate = useNavigate();
+  return (
+    <div className=" ">
+      <button
+        onClick={() => {
+          {
+            navigate("/");
+          }
+        }}
+        className="bg-teal-500 rounded-sm m-2 h-8 w-13"
+        placeholder="button"
+      >
+        This is a button
+      </button>
+      <button
+        onClick={() => {
+          {
+            navigate("/Landing");
+          }
+        }}
+        className="bg-teal-500 rounded-sm m-2 h-8 w-13"
+        placeholder="button"
+      >
+        This is a button2
+      </button>
+    </div>
+  );
+}
+
+export default App;
